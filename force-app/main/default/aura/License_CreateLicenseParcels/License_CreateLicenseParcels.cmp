@@ -1,0 +1,84 @@
+<!--
+ - Created by rohit on 9/7/18.
+ -->
+
+<aura:component description="License_CreateLicenseParcels"
+                implements="force:lightningQuickActionWithoutHeader,force:hasRecordId"
+                controller="LicenseAuraController">
+
+    <aura:attribute name="showSpinner" type="Boolean" default="false"/>
+    <aura:attribute name="errorMessage" type="String" default=""/>
+
+    <aura:attribute name="startDate" type="Date"/>
+    <aura:attribute name="endDate" type="Date"/>
+    <aura:attribute name="licenseEvent" type="License_Event__c"
+                    default="{
+                        'sobjectType' : 'License_Event__c',
+                    }" />
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <lightning:navigation aura:id="navService"/>
+
+    <!-- PAGE HEADER -->
+    <lightning:layout class="slds-page-header slds-page-header--object-home">
+        <lightning:layoutItem>
+            <lightning:icon iconName="standard:scan_card" alternativeText="License Event"/>
+        </lightning:layoutItem>
+        <lightning:layoutItem padding="horizontal-small">
+            <div class="page-section page-header">
+                <h1 class="slds-text-heading--label">License Request</h1>
+                <h2 class="slds-text-heading--medium">Create License Request</h2>
+            </div>
+        </lightning:layoutItem>
+    </lightning:layout>
+    <!-- / PAGE HEADER -->
+
+    <!-- CREATE  FORM -->
+    <div aria-labelledby="newlicenseRequestform">
+        <!-- BOXED AREA -->
+        <fieldset class="slds-box slds-theme--default slds-container--medium">
+            <legend id="newlicenseRequestform" class="slds-text-heading--medium
+          slds-p-vertical--medium">
+                Set Start and End Dates for the Licenses.
+            </legend>
+
+            <span style="color:red;"><lightning:formattedRichText value="{!v.errorMessage}"/></span>
+            <!-- CREATE NEW  FORM -->
+            <form class="slds-form--stacked">
+                <div class="slds-grid slds-wrap">
+                    <div class="slds-col slds-size_1-of-2 slds-small-size_1-of-2 slds-medium-size_1-of-2 inputPadding">
+
+                        <lightning:input aura:id="licenseRequestform" label="Start Date"
+                                         name="startDate"
+                                         type="date"
+                                         value="{!v.licenseEvent.Start_Date__c}"
+                                         required="true"/>
+                        <lightning:input aura:id="licenseRequestform" label="End Date"
+                                         name="endDate"
+                                         type="date"
+                                         value="{!v.licenseEvent.End_Date__c}"
+                                         required="true"/>
+
+                        <aura:if isTrue="{!v.errorMessage == ''}">
+                            <lightning:button label="Submit"
+                                              class="slds-m-top--medium"
+                                              variant="brand"
+                                              onclick="{!c.submitClickHandler}"/>
+
+                        </aura:if>
+
+                        <lightning:button label="Cancel"
+                                          class="slds-m-top--medium"
+                                          variant="neutral"
+                                          onclick="{!c.cancelClickHandler}"/>
+                    </div>
+                </div>
+            </form>
+
+        </fieldset>
+        <!-- / BOXED AREA -->
+    </div>
+
+
+</aura:component>

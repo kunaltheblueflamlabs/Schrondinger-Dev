@@ -1,0 +1,75 @@
+<aura:component controller="LicenseAuraController" implements = "force:hasRecordId,flexipage:availableForAllPageTypes">
+    <aura:attribute name="LicenseProducts" type="List" default="[]"/>
+    <aura:attribute name="recordId" type="id" access="global" default="a1L1b0000009aZc"/> 
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+    <table class="slds-table slds-table_bordered slds-table_cell-buffer" style=" overflow:scroll;">
+        <thead>
+            <tr class="slds-text-title_caps">
+                <th scope="col">
+                    <div class="slds-truncate" title="Product Name">Product Name</div>
+                </th>
+<!--
+                <th scope="col">
+                    <div class="slds-truncate" title="Product Description">Product Description</div>
+                </th>
+-->
+                <th scope="col">
+                    <div class="slds-truncate" title="Quantity">Quantity</div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate" title="License Method">License Method</div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate" title="Parcel Group">Parcel Group</div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate" title="Start Date">Start Date</div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate" title="End Date">End Date</div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <aura:iteration items="{!v.LicenseProducts}" var="product">
+                <tr>
+                    <td scope="row" data-label="Product Name">
+                        <aura:if isTrue="{!product.Required_By__c != null}">
+                            <div class="slds-truncate" title="Cloudhub">&nbsp;&nbsp;>&nbsp;{!product.Product__r.Name}</div>
+                            <aura:set attribute="else">
+                                <div class="slds-truncate" title="Cloudhub">{!product.Product__r.Name}</div>
+                            </aura:set>
+                        </aura:if>
+                    </td>
+<!--
+                    <td data-label="Product Description">
+                        <div class="slds-truncate" title="Cloudhub">{!product.Product__r.Description}</div>
+                    </td>
+-->
+                    <td data-label="Quantity">
+                        <div class="slds-truncate" title="Quantity">{!product.Quantity__c}</div>
+                    </td>
+                    <td data-label="License Method">
+                        <div class="slds-truncate" title="4/14/2015">{!product.License_Parcel__r.License_Method__c}</div>
+                    </td>
+                    <td data-label="Parcel Group">
+                        <div class="slds-truncate" title="Prospecting">{!product.License_Parcel__r.Parcel_Group__c}</div>
+                    </td>
+                    <td data-label="Start Date">
+                        <div class="slds-truncate" title="Start Date">
+                            <ui:outputDate value="{!product.Start_Date__c}" format="MM/DD/YYYY" />
+                        </div>
+                    </td>
+                    <td data-label="End Date">
+                        <div class="slds-truncate" title="End Date">
+                            <ui:outputDate value="{!product.End_Date__c}" format="MM/DD/YYYY" />
+                        </div>
+                    </td>
+                </tr>
+            </aura:iteration>
+        </tbody>
+    </table>
+
+    <aura:if isTrue="{!(empty(v.LicenseProducts))}"><div style="margin-left: 20px;margin-top: 10px;" class="slds-truncate" >No License Products</div></aura:if>
+</aura:component>

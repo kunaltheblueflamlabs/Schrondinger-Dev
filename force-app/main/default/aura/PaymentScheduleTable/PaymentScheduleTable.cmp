@@ -1,0 +1,16 @@
+<aura:component implements="force:hasRecordId,flexipage:availableForAllPageTypes" >    
+    <aura:attribute name="data" type="String" />
+    <aura:if isTrue="{!v.data}">
+    	<aura:unescapedHtml value="{!v.data}"/>
+        <aura:set attribute="else">
+        	<div><h3>No payment schedule data found.</h3></div>
+        </aura:set>
+    </aura:if>
+    
+    <div style="display:none">
+        <lightning:recordEditForm recordId="{!v.recordId}" objectApiName="SBQQ__Quote__c" onload="{!c.doInit}">
+            <lightning:messages />
+            <lightning:inputField fieldName="Payment_Table__c" />
+        </lightning:recordEditForm>
+    </div>
+</aura:component>

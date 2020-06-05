@@ -1,0 +1,670 @@
+<apex:page controller="LicenseRetrievalController" docType="html-5.0">
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <apex:includeScript value="{!$Resource.SweetAlert}"/>
+    <style>
+        
+        .inputField {
+            margin: 5px !important;
+            padding: 3px 8px;
+            background-color: #ffffff;
+            color: #333;
+        }
+
+        .title {
+            padding: 4px !important; 
+            background: #45474e; 
+            margin: 10px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        .sub_container {
+            display: inline-block;
+            width: 700px !important;
+            font-size: 15px;
+            margin-top: 15px;
+            height: 500px !important;
+        }
+
+        .inputTxt {
+            width: 49% !important;
+            margin-top: 5px !important;
+            margin-bottom: 5px !important;
+        }
+
+        .crossStyleInput {
+            fill: #0000007a !important;
+            height: 15px !important;
+            width: 13px;
+            margin: 2px !important;
+            margin-left: 3px !important;
+            cursor: pointer !important;
+            float: right;
+        }
+
+        .addStyleInput {
+            fill: #0000007a !important;
+            height: 15px !important;
+            width: 13px;
+            margin: 2px !important;
+            margin-left: 3px !important;
+            cursor: pointer !important;
+            float: left;
+        }
+
+        #swal2-content {
+            font-size: 15px;
+            padding: 10px;
+        }
+
+        .swal2-modal{
+            width: 400px !important!;
+        }
+
+        .glyphicon {
+            color: #45474e;
+        }
+
+        .btnStyles {
+
+            padding: 5px !important;
+            background: #45474e !important;
+            color: white !important;
+            border-radius: 0.5rem !important;
+        }
+
+        #errorMssg {
+            display: none;
+            color: red;
+            font-weight: bold;
+            font-size: 14px;
+            float: left;
+        }
+
+        .pt_title {
+
+            color: #036;
+            font: normal 18px/20px Arial, "Nimbus Sans L", Helvetica, sans-serif;
+            height: 20px;
+            margin: 10px;
+            text-align: left;
+        }
+
+        .tableStyle {
+            margin-left: 10px;
+            max-width: 680px;
+        }
+
+        .slds-button {
+            padding: 4px !important;
+        }
+
+        .slds-button_brand {
+            background-color: #45474e !important;
+            border-color: #45474e !important;
+        }
+
+        .slds-button_neutral {
+            color: #45474e !important;
+        }        
+
+    </style>
+
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" lang="en">
+    <head>
+      <meta charset="utf-8" />
+        <meta http-equiv="x-ua-compatible" content="ie=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <apex:slds />
+    </head> 
+    <body>
+
+    <apex:form id="form">
+        <div class="container">
+            <div class="sub_container">
+                <apex:pageMessages ></apex:pageMessages>
+                <apex:outputPanel rendered="{!(!isError)}">
+                    <div style="font-size: 36px; margin-bottom: 15px;"> Obtain License </div>
+                    <!--<apex:outputPanel rendered="{! AND(!showNodeLocked , !isDetail)}">
+                        <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="false">
+                          <div class="carousel-inner">
+                            <div class="{!IF(isSingle,'item active','item')}">
+                              <img src="{!URLFOR($Resource.LicenseImages,'img/single.jpeg')}"/>
+                            </div>
+
+                            <div class="{!IF(isTriad,'item active','item')}">
+                              <img src="{!URLFOR($Resource.LicenseImages,'img/triad.jpeg')}"/>
+                            </div>
+
+                            <div class="{!IF(isCloud,'item active','item')}">
+                              <img src="{!URLFOR($Resource.LicenseImages,'img/cloud.jpeg')}"/>
+                            </div>
+                          </div>
+
+                          <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+                            <span class="glyphicon glyphicon-chevron-left" onclick="changeSlideLeft();"></span>
+                            <span class="sr-only">Previous</span>
+                          </a>
+                          <a class="right carousel-control" href="#myCarousel" data-slide="next">
+                            <span class="glyphicon glyphicon-chevron-right" onclick="changeSlideRight();"></span>
+                            <span class="sr-only">Next</span>
+                          </a>
+                        </div>
+                    </apex:outputPanel>-->
+                    <apex:outputLabel rendered="{! (!isNodeLocked && !isTriad && !isDetail)}">
+                            <!--<fieldset class="slds-form-element">
+                                <div class="slds-form-element__control"  style="width: 85px !important; height: 70px !important; display: contents !important;">
+                                    <span class="slds-radio">
+                                        <input type="radio" id="radio-3" name="options" value="radio-3" onclick="changeToSingle();"/>
+                                        <label class="slds-radio__label" for="radio-3">
+                                            <span class="slds-radio_faux"></span>
+                                            <span class="slds-form-element__label radioLabel">Single</span>
+                                        </label>
+                                    </span>
+                                    <span class="slds-radio">
+                                        <input type="radio" id="radio-4" name="options" value="radio-4" onclick="changeToCloud();"/>
+                                        <label class="slds-radio__label" for="radio-4">
+                                            <span class="slds-radio_faux"></span>
+                                            <span class="slds-form-element__label radioLabel">Cloud</span>
+                                        </label>
+                                    </span>
+                                </div>
+                            </fieldset>-->
+                            <label>Select Single if using a Single server or select Cloud if installing on Cloud.</label><br/>
+                            <button class="{!IF(isSingle, 'slds-button slds-button_brand', 'slds-button slds-button_neutral')}" onclick="changeToSingle(); return false;"> Single </button>
+                            <button class="{!IF(isCloud, 'slds-button slds-button_brand', 'slds-button slds-button_neutral')}" onclick="changeToCloud(); return false;"> Cloud </button>
+ 
+                        </apex:outputLabel>
+                    <div>
+                        <!--<apex:commandButton action="{!changeSingle}"  value="Single" rendered="{! AND(!isTriad, !isNodeLocked)}" reRender="form"/>
+                            <apex:actionFunction action="{!changeTriad}" name="triadFunc" rerender="form"/>
+                        <apex:commandButton action="{!changeCloud}"  value="Cloud" rendered="{! AND(!isTriad, !isNodeLocked)}" reRender="form"/>-->
+                        <apex:actionFunction action="{!changeSingle}" name="singleFunc" rerender="form" oncomplete="updateSingleCheckbox();"/>
+                        <apex:actionFunction action="{!changeCloud}" name="cloudFunc" rerender="form" oncomplete="updateCloudCheckbox();"/>
+                        
+
+                        <apex:outputPanel rendered="{! (showTriad || isSingle)}" id="reqInfo">
+                            <div class="pt_title"> License Retrieval Assistant</div>
+                            <div class="title"> Required Information </div>
+                            <table class='tableStyle'>
+                                <tr>
+                                    <td colspan="3">                            
+                                        Please enter the Host ID (MAC Address) and machine name for your FLEXlm license server.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: right;"> Host ID: </td>
+                                    <td> <apex:inputField id="madd1" styleClass="inputField" value="{!parcel.Host_ID_MAC_Address_1__c}"/> </td>
+                                    <td style="text-align: right;"> Machine Name: <apex:inputField id="mname1" styleClass="inputField" value="{!parcel.Machine_Name_1__c}" /> </td>
+                                </tr>
+                                <apex:outputPanel layout="none" id="somePanel" rendered="{!showTriad}">
+                                <tr>
+                                    <td style="text-align: right;"> #2 Host ID: </td>
+                                    <td> <apex:inputField id="madd2" styleClass="inputField" value="{!parcel.Host_ID_MAC_Address_2__c}"/> </td>
+                                    <td style="text-align: right;"> Machine Name: <apex:inputField id="mname2" styleClass="inputField" value="{!parcel.Machine_Name_2__c}" /> </td>
+                                </tr>
+
+                                <tr>
+                                    <td style="text-align: right;"> #3 Host ID: </td>
+                                    <td> <apex:inputField id="madd3" styleClass="inputField" value="{!parcel.Host_ID_MAC_Address_3__c}"/> </td>
+                                    <td style="text-align: right;"> Machine Name: <apex:inputField id="mname3" styleClass="inputField" value="{!parcel.Machine_Name_3__c}" /> </td>
+                                </tr>
+                            </apex:outputPanel>
+                            </table>
+                        </apex:outputPanel>
+                    </div>
+
+                    <div>
+                        <apex:outputPanel rendered="{!isCloud}">
+                            <div class="pt_title"> License Retrieval Assistant</div>
+                            <div class="title"> Required Information </div>
+                            Cloud Host ID: <apex:inputField id="maddCloud" styleClass="inputField" value="{!parcel.Cloud_Host_ID__c}"/>
+<!--
+                            (e.g., 00A0C914C829 or 00:a0:c9:14:c8:29)
+-->
+                        </apex:outputPanel>
+                    </div>
+
+                    <div>
+                    <apex:pageBlock id="block1" rendered="{! (showTriad || isSingle || isCloud)}" >
+                        <apex:pageBlockSection id="section1" columns="1" collapsible="true" title="Optional Information">
+                            <apex:pageBlockSectionItem >
+                            <apex:outputPanel >
+                            <span> If you wish to use a different server port than the default (27008), specify it below. </span>
+                            <table class='tableStyle'>
+                                <tr>
+                                    <td style="text-align: right; width: 30%;"> FLEXlm Server Port: </td>
+                                    <td> <apex:inputField id="portNum" styleClass="inputField" value="{!parcel.FLEXlm_Server_Port__c}" /> </td>
+                                    <td> (integer port number, recommended range: 27000-65535) </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: right; width: 30%;"> Vendor Port: </td>
+                                    <td> <apex:inputField id="vendorPortNum" styleClass="inputField"
+                                                          value="{!parcel.Vendor_Port__c}" /> </td>
+                                    <td> (integer port number, recommended range: 27000-65535) </td>
+                                </tr>
+                            </table>
+                            </apex:outputPanel>
+                            </apex:pageBlockSectionItem>
+                            
+                        </apex:pageBlockSection>
+                        
+                    <script> twistSection(document.getElementById('{!$Component.block1.section1}').getElementsByTagName('img')[0]) </script>
+                    </apex:pageBlock>
+                        
+                    </div>
+                    <div>
+                        <apex:outputPanel rendered="{!showNodeLocked}">
+                            <div class="title"> Machine Information </div>
+                            <div style="margin-bottom: 10px;">
+                                Please enter the host ID (MAC Address) and machine name details for each node below. It is not necessary to enter all nodes at once. You can come back to this page at any time to enter additional nodes as needed. (e.g., 00A0C914C829 cadd.company.com) <br/>
+
+                                <span> <h2> Nodes Available: {!nodesAvailable} </h2></span>
+                                <span> <h2> Nodes Remaining: </h2></span> <span id="remNodes"> {!nodesRemaining} </span>
+
+                                
+                            </div>
+
+                            <table id="mki" style="width: 100%;">
+                                    <tr>
+                                        <td class="title" colspan="2">
+                                            Machine Key Information
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td style="padding: 5px;">
+                                            HOST ID (MAC ADDRESS)
+                                        </td>
+                                        <td>
+                                            MACHINE NAME
+                                        </td>
+                                    </tr>
+                            </table>
+                            <input id="macAdd" class="slds-input inputTxt" type="text"/>
+                            <input id="machName" class="slds-input inputTxt" type="text"/>
+                            <div style="display: flex; padding-left: 5px; cursor: pointer; width: 60px;" onclick="add();">
+                                Add 
+                            </div>
+                            
+                        </apex:outputPanel>
+                    </div>
+                    <span id="errorMssg"> </span>
+                    <div>
+                        <apex:outputPanel rendered="{!isDetail}" id="detailInfo">
+                            <apex:outputPanel rendered="{!!isLicenseGenerated}">
+                                <div class="title"> Review </div>
+                                <div style="margin-bottom: 10px;">
+                                    Please review your license information. Click Back to revise the information or click Finish to submit your request.
+                                </div>
+                            </apex:outputPanel>
+                            <div class="title"> License Details </div>
+                            <table>
+                                <tr>
+                                    <td> License Type </td>
+                                    <td> {!parcel.FlexLM_Submethod__c} </td>
+                                </tr>
+                                <apex:outputPanel layout="none" rendered="{! (!isNodeLocked)}">
+                                    <tr >
+                                        <td> Server Port </td>
+                                        <td> {!parcel.FLEXlm_Server_Port__c} </td>
+                                    </tr>
+                                    <tr >
+                                        <td> Vendor Port </td>
+                                        <td> {!parcel.Vendor_Port__c} </td>
+                                    </tr>
+                                </apex:outputPanel>
+                                <apex:repeat value="{!serv}" var="s">
+                                    <tr>
+                                        <td colspan="2" style="padding-left: 20px; font-weight: bold;"> <h2> {!s.servNum} </h2></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding-left: 50px;"> Host ID: </td>
+                                        <td> {!s.hostId} </td>
+                                    </tr>
+                                    <apex:outputPanel layout="none" rendered="{! (s.machineName != '')}">
+                                        <tr>
+                                            <td style="padding-left: 50px;"> Machine Name </td>
+                                            <td> {!s.machineName} </td>
+                                        </tr>
+                                    </apex:outputPanel>
+                                    <apex:outputText value="{!s.hostId}" rendered="{!isCloud}" />
+                                </apex:repeat>
+                            </table>
+                            <apex:outputPanel rendered="{!!isLicenseGenerated}">
+                                <apex:commandButton styleClass="btnStyles" style="float: left; margin-top: 10px;" action="{!back}" value="Back" reRender="form" oncomplete="renderBack();"/>
+                                <button class="btnStyles" style="float: right; margin-top: 10px;" onclick="doFinish(); return false;"> Finish </button>
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!isDetail && isLicenseGenerated}" id="detailInfoFiles">
+                            <div class="title"> Email License Files</div>
+                            <div style="margin-bottom: 10px;">
+                                {!$Label.License_File_Download_Message}
+                                <a href="javascript:void();" onclick="sendEmail('{!parcel.Id}')">send email</a>
+
+                                
+                            </div>
+                            
+                            <!-- 
+                            <apex:repeat value="{!cvList}" var="cv">
+                                <a href="http://rohit-license.cs25.force.com/getlicense/sfc/servlet.shepherd/version/download/{!cv.Id}" target="_blank">{!cv.title}</a> <br/>
+                            </apex:repeat> -->
+                        </apex:outputPanel>
+                    </div>
+
+                    <apex:outputPanel rendered="{!isSingle}">
+                        <button onclick="nextStepSingle(); return false;" class="btnStyles" style="float: right;"> Next </button>
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!showTriad}">
+                        <button onclick="nextStepTriad(); return false;" class="btnStyles" style="float: right;"> Next </button>
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!isCloud}">
+                        <button onclick="nextStepCloud(); return false;" class="btnStyles" style="float: right;"> Next </button>
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!showNodeLocked}">
+                        <button onclick="nextStepNode(); return false;" class="btnStyles" style="float: right;"> Next </button>
+                    </apex:outputPanel>
+
+                    <apex:actionFunction name="finishFunc" action="{!finish}" reRender="form, errorMessagePanel" oncomplete="finishComplete()"/>
+                    <apex:outputPanel id="errorMessagePanel" style="display:none;">
+                        <script>
+                        function finishComplete() {
+                            swal({
+                                title : '{!errorMessage}',
+                                showCancelButton: false,
+                                confirmButtonColor: '#555',
+                            });
+                        }
+                        </script>
+                    </apex:outputPanel>
+                    <apex:actionFunction action="{!next}" name="nextFunc" reRender="form"/>
+                    <apex:inputHidden value="{!macAddresses}" id="addresHidden"/>
+              </apex:outputPanel>
+            </div>
+        </div>
+    </apex:form>
+  </body>
+  </html>
+    <script>
+
+
+        var currentMachines = '{!currentMachines}';
+        var remainingNodes = '{!nodesRemaining}';
+        var macAddresses = "";
+
+        function doFinish() {
+
+            var licenseAgreement = "<a target='_blank' href='https://www.schrodinger.com/salesagreements/''>End User License Agreement (EULA)</a>";
+            swal({
+              title: "EULA Confirmation:",
+              html: "By using the license key to our software, you are agreeing to the terms set forth in our " + licenseAgreement + ". Please confirm below that you have read the EULA and agree to the terms therein by clicking Accept below.",
+              showCancelButton: true,
+              confirmButtonColor: '#e64942',
+              cancelButtonColor: '#555',
+              confirmButtonText: 'Confirm'
+            })
+            .then((result) => {
+              if (result.value) {
+                finishFunc();
+              }
+            });
+        }
+        
+        function renderBack() {
+            if('{!showNodeLocked}' == 'true') {
+                var allAdd = macAddresses.split('/');
+                for ( var i = 0; i < allAdd.length; i++ ) {
+                    if(allAdd[i] != '') {
+                        var names = allAdd[i].split(';');
+                        var elemToAppend = "<tr id='" + names[0] + "'><td style='padding: 5px;'>" + names[0] + "</td><td style='padding: 5px;'>" + names[1] +"<svg class='slds-icon slds-icon-text-default crossStyleInput' aria-hidden='true' onclick='remove(this);'><use xlink:href='/apexpages/slds/latest/assets/icons/action-sprite/svg/symbols.svg#close'></use></svg></td></tr>";
+                        $('#mki').append(elemToAppend);
+                    }
+                }
+                
+                $("#remNodes").html(remainingNodes);
+                $("#macAdd").val("");
+                $("#machName").val("");
+            }
+        }
+
+        updateSingleCheckbox();
+
+        function changeSlideRight() {
+
+            var slideFrom = $('#myCarousel').find('.active').index();
+            slideFrom++;
+            if (slideFrom == 3) {
+                slideFrom = 0;
+            }
+            changeSlide(slideFrom);
+            
+        }
+
+        function changeSlideLeft() {
+
+            var slideFrom = $('#myCarousel').find('.active').index();
+            slideFrom--;
+            if (slideFrom == -1) {
+                slideFrom = 2;
+            }
+            changeSlide(slideFrom);
+        }
+
+        function changeSlide(slide) {
+
+            if (slide == 0) {
+                changeToSingle();
+            } else if (slide == 1) {
+                changeToTriad();
+            } else if (slide == 2) {
+                changeToCloud();
+            }
+        }
+
+        function changeToSingle() {
+            singleFunc();
+        }
+
+        function changeToTriad() {
+            triadFunc();
+        }
+
+        function updateSingleCheckbox() {
+            $("#radio-4").prop("checked", false);
+            $("#radio-3").prop("checked", true);
+        }
+
+        function updateCloudCheckbox() {
+            $("#radio-3").prop("checked", false);
+            $("#radio-4").prop("checked", true);
+        }
+
+        function changeToCloud() {
+            cloudFunc();
+        }
+        
+        function add(){
+            if ( remainingNodes == 0 ) {
+                $("#errorMssg").html('There are no remaining nodes.');
+                $("#errorMssg").css("display", "block");
+                return;
+            }
+            var macadd = $("#macAdd").val();
+            var machName = $("#machName").val();
+            var valid = isValid(macadd, machName);
+            //add them to global variable
+            if ( valid ) {
+                var fullName = macadd + ';' + machName;
+                if ( checkNotAlreadyExists(fullName) && checkNoRepeatedValues(fullName)) {
+                    $("#errorMssg").css("display", "none");
+                    macAddresses += fullName +'/';
+                    $("#macAdd").val("");
+                    $("#machName").val("");
+                    var elemToAppend = "<tr id='" + macadd + "'><td style='padding: 5px;'>" + macadd + "</td><td style='padding: 5px;'>" + machName +"<svg class='slds-icon slds-icon-text-default crossStyleInput' aria-hidden='true' onclick='remove(this);'><use xlink:href='/apexpages/slds/latest/assets/icons/action-sprite/svg/symbols.svg#close'></use></svg></td></tr>";
+                    $('#mki').append(elemToAppend);
+                    remainingNodes--;
+                    $("#remNodes").html(remainingNodes);
+                    jQuery('[id$=addresHidden]').val(macAddresses);
+                } else {
+                    $("#errorMssg").html('A machine already exists with those values.');
+                    $("#errorMssg").css("display", "block");
+                }
+            } 
+        }
+
+        function remove(elem) {
+
+            var e = elem.parentElement.parentElement;
+            e.remove();
+            var allAdd = macAddresses.split('/');
+            for ( var i = 0; i < allAdd.length; i++ ) {
+                var crrnt = allAdd[i];
+                var crrntadd = crrnt.split(';')[0];
+                if ( crrntadd == e.id ) {
+                    macAddresses = macAddresses.replace(crrnt, '');
+                }
+            }
+            jQuery('[id$=addresHidden]').val(macAddresses);
+            remainingNodes++;
+            $("#remNodes").html(remainingNodes);
+        }
+
+        function nextStepSingle() {
+
+            var madd1 = jQuery('[id$=madd1]').val();
+            var mname1 = jQuery('[id$=mname1]').val();
+            if (isValid(madd1, mname1) && validatePortNumber() ) {
+                nextFunc();
+            } 
+        }
+
+        function nextStepTriad() {
+
+            var madd1 = jQuery('[id$=madd1]').val();
+            var mname1 = jQuery('[id$=mname1]').val();
+            var madd2 = jQuery('[id$=madd2]').val();
+            var mname2 = jQuery('[id$=mname2]').val();
+            var madd3 = jQuery('[id$=madd3]').val();
+            var mname3 = jQuery('[id$=mname3]').val();
+
+            if ( isValid(madd1, mname1) && isValid(madd2, mname2) && isValid(madd3, mname3) && validatePortNumber() ) {
+                if ( madd1 != madd2 && madd1 != madd3 && madd2 != madd3 && mname1 != mname2 && mname1 != mname3 && mname2 != mname3 ) {
+                    $("#errorMssg").css("display", "none");
+                    nextFunc();
+                } else {
+                    $("#errorMssg").html('Values must be unique.');
+                    $("#errorMssg").css("display", "block");
+                }
+            } 
+        }
+
+        function nextStepCloud() {
+
+            var maddcloud = jQuery('[id$=maddCloud]').val();
+            if ( isValid(maddcloud, 'noname') && validatePortNumber() ) {
+                $("#errorMssg").css("display", "none");
+                nextFunc();
+            } 
+        }
+
+        function nextStepNode() {
+            var adds = macAddresses;
+            while (adds.includes('/')) {
+                adds = adds.replace('/', '');
+            }
+            if ( adds != "" ) {
+                $("#errorMssg").css("display", "none");
+                nextFunc();
+            } else {
+                $("#errorMssg").html('You need to add a machine in order to proceed.');
+                $("#errorMssg").css("display", "block");
+            }
+        }
+
+        function isValid(madd, mname) {
+            var regex = /^([0-9A-F]{2}[:-]?){5}([0-9A-F]{2})$/;
+            var valid = regex.test(madd);
+            var validMachineName = true;
+            if (mname == '' || /\s/.test(mname) || /[^a-zA-Z0-9\.]/.test(mname)) {
+                validMachineName = false;
+            }
+            if (!valid) {
+                $("#errorMssg").html('Invalid format (e.g., 00A0C914C829 or 00:a0:c9:14:c8:29).');
+                $("#errorMssg").css("display", "block");
+            }
+            if (!validMachineName) {
+                $("#errorMssg").html('Machine name cannot contain blank spaces or special characters.');
+                $("#errorMssg").css("display", "block");
+            }
+            valid = valid && validMachineName;
+            return valid;
+        }
+
+        function checkNoRepeatedValues(current) {
+
+            var currentAdd = current.split(';')[0];
+            var currentName = current.split(';')[1];
+            var allAdds = macAddresses.split('/');
+            return checkMachineData(allAdds, currentAdd, currentName);
+        }
+
+        function checkNotAlreadyExists(current) {
+            var currentAdd = current.split(';')[0];
+            var currentName = current.split(';')[1];
+            var allAdds = currentMachines.split(',');
+            return checkMachineData(allAdds, currentAdd, currentName);
+        }
+
+        function checkMachineData(arr, hostid, name) {
+            var ret = true;
+            for ( var i = 0; i < arr.length && ret; i++ ) {
+                var aux = arr[i];
+                var cadd = aux.split(';')[0];
+                var cname = aux.split(';')[1];
+                if ( cadd == hostid || name == cname ) {
+                    ret = false;
+                }
+            }
+            return ret;
+        }
+
+        function validatePortNumber() {
+            var port = jQuery('[id$=portNum]').val();
+            var ret = !isNaN(parseFloat(port)) && isFinite(port);
+            if (ret) {
+                ret = port.length <= 5 && port > 0;
+            }
+            if (!ret) {
+                $("#errorMssg").html('Invalid port number.');
+                $("#errorMssg").css("display", "block");
+            }
+            return ret;
+        }
+
+        function sendEmail(parcelId) {
+            Visualforce.remoting.Manager.invokeAction(
+                //Invoking controller action getcon
+                '{!$RemoteAction.LicenseRetrievalController.sendEmail}',
+                parcelId, 
+                function(result, event){
+                    swal({
+                        title : result,
+                        showCancelButton: false,
+                        confirmButtonColor: '#555',
+                    }); 
+                },
+                {escape: true}
+            );
+        }
+    </script>
+</apex:page>
