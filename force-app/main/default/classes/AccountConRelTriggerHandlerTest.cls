@@ -8,6 +8,7 @@
 public class AccountConRelTriggerHandlerTest{
       static testMethod void  testValidateMethod(){
    
+        //This is a test ACCOUNT Insert
       Account acc = new Account();
       acc.Name = 'bundle'; 
       acc.Active__c=true;
